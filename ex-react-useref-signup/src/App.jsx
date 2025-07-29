@@ -25,11 +25,14 @@ function App() {
 
     e.preventDefault()
     if (
-      !name.trim().includes() ||
+      !name.trim() ||
       !username.trim() ||
       !password.trim() ||
       !special.trim() ||
-      !anni <= 0 ||
+      anni <= 0 ||
+      !usernameValid ||
+      !passwordValid ||
+      !bioValid ||
       !bio.trim()) {
       alert('Complia correttamente tutti i campi');
       return
@@ -44,12 +47,12 @@ function App() {
       `)
   }
 
-  // controllo del campo username
+  // controllo della username
   const usernameValid = useMemo(() => {
     const valid = username.split('').every(char =>
       letters.includes(char.toLocaleLowerCase()) || numbers.includes(char)
     )
-    return valid && username.length >= 6
+    return valid && username.trim().length >= 6
   }, [username])
 
   // controllo della password
@@ -61,6 +64,12 @@ function App() {
     )
   }, [password])
 
+  // controllo della bio
+  const bioValid = useMemo(() => {
+    return bio.trim().length >= 100 && bio.trim().length <= 1000
+  }, [bio])
+
+
   return (
     <>
       <header className='p-4 text-center text-white bg-primary'>EX - Web Developer Signup</header>
@@ -70,8 +79,14 @@ function App() {
             <div className="col-lg-3 d-flex flex-column">
               <form onSubmit={sendData}>
                 <input type="text" className=" mb-3 form-control" value={name} placeholder='Nome completo' onChange={(e) => setName(e.target.value)} required />
-                <input type="text" className=" mb-3 form-control" placeholder=' Username' value={username} onChange={(e) => setUsername(e.target.value)} required />
-                <input type="password" className=" mb-3 form-control" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div>
+                  <input type="text" className=" mb-3 form-control" placeholder=' Username' value={username} onChange={(e) => setUsername(e.target.value)} required />
+                  {username.trim() && (<p style={{ color: usernameValid ? 'green' : 'red' }}> {usernameValid ? "Username Valido" : "Username non valido"}</p>)}
+                </div>
+                <div>
+                  <input type="password" className=" mb-3 form-control" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  {password.trim() && (<p style={{ color: passwordValid ? 'green' : 'red' }}>{passwordValid ? "Password valida" : "Password non valida"}</p>)}
+                </div>
                 <select className=" mb-3 form-control" value={special} onChange={(e) => setSpecial(e.target.value)} >
                   <option >&#9660; Scegli la specializzazione </option>
                   <option value="Full stack">Full Stack </option>
@@ -79,7 +94,11 @@ function App() {
                   <option value="Backend">Backend</option>
                 </select>
                 <input type="number" className=" mb-3 form-control" placeholder='Anni di esperienza' value={anni} onChange={(e) => setAnni(e.target.value)} required />
-                <textarea className=" mb-3 form-control" placeholder='Breve descrizione' value={bio} onChange={(e) => setBio(e.target.value)} required></textarea>
+                <div>
+                  <textarea className=" mb-3 form-control" placeholder='Breve descrizione' value={bio} onChange={(e) => setBio(e.target.value)} required></textarea>
+                  {bio.trim() && (<p style={{ color: bioValid ? 'green' : 'red' }}>{bioValid ? "Descrizione valida" : "Descrizione troppo corta o lunga"}</p>)}
+                </div>
+
                 <button className='btn btn-primary'>Invia</button>
               </form>
             </div>
