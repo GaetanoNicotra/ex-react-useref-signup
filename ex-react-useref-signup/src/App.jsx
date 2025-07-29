@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from 'react'
+import { useMemo, useState, useRef, useEffect } from 'react'
 
 function App() {
 
@@ -9,7 +9,6 @@ function App() {
 
   // campi non controllati
   const name = useRef('');
-  console.log(name)
 
   const special = useRef('');
 
@@ -52,6 +51,17 @@ function App() {
       `)
   }
 
+  // funzione per resettare i campi input
+  const resetInput = () => {
+    setUsername('')
+    setPassword('')
+    setBio('')
+    name.current.value = '';
+    special.current.value = '';
+    anni.current.value = '';
+    name.current.focus()
+  }
+
   // controllo della username
   const usernameValid = useMemo(() => {
     const valid = username.split('').every(char =>
@@ -74,10 +84,14 @@ function App() {
     return bio.trim().length >= 100 && bio.trim().length <= 1000
   }, [bio])
 
+  // focus sul campo input
+  useEffect(() => {
+    name.current.focus()
+  }, [])
 
   return (
     <>
-      <header className='p-4 text-center text-white bg-primary'>EX - Web Developer Signup</header>
+      <header className='p-4 text-center text-white bg-primary'><h1>EX - Web Developer Signup</h1></header>
       <main>
         <div className="container mt-5">
           <div className="row ">
@@ -103,8 +117,8 @@ function App() {
                   <textarea className=" mb-3 form-control" placeholder='Breve descrizione' value={bio} onChange={(e) => setBio(e.target.value)} required></textarea>
                   {bio.trim() && (<p style={{ color: bioValid ? 'green' : 'red' }}>{bioValid ? "Descrizione valida" : "Descrizione troppo corta o lunga"}</p>)}
                 </div>
-
-                <button className='btn btn-primary'>Invia</button>
+                <button className='btn btn-primary me-4'>Invia</button>
+                <button className='btn btn-danger' onClick={resetInput}>Resetta i campi</button>
               </form>
             </div>
 
