@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef } from 'react'
 
 function App() {
 
@@ -7,29 +7,34 @@ function App() {
   const numbers = "0123456789";
   const symbols = '!@#$%^&*()-_=+[]{}|;:\\",.<>?/`~';
 
-  // variabili di stato per i campi input della form
-  const [name, setName] = useState('');
+  // campi non controllati
+  const name = useRef('');
+  console.log(name)
 
+  const special = useRef('');
+
+  const anni = useRef('');
+
+  // variabili di stato per i campi input controllati della form
   const [username, setUsername] = useState('');
 
   const [password, setPassword] = useState('');
-
-  const [special, setSpecial] = useState('');
-
-  const [anni, setAnni] = useState('');
 
   const [bio, setBio] = useState('');
 
   // funzione per l'invio dei dati
   const sendData = (e) => {
+    const nomeVal = name.current.value.trim();
+    const specialVal = special.current.value.trim();
+    const anniVal = Number(anni.current.value);
 
     e.preventDefault()
     if (
-      !name.trim() ||
+      !nomeVal ||
       !username.trim() ||
       !password.trim() ||
-      !special.trim() ||
-      anni <= 0 ||
+      !specialVal ||
+      anniVal <= 0 ||
       !usernameValid ||
       !passwordValid ||
       !bioValid ||
@@ -38,11 +43,11 @@ function App() {
       return
     }
     console.log(`Riepilogo dati:
-      - Nome = ${name};
+      - Nome = ${nomeVal};
       - Username = ${username}
       - Password = ${password}
-      - Specializzazione = ${special}
-      - Anni di ex. = ${anni}
+      - Specializzazione = ${specialVal}
+      - Anni di ex. = ${anniVal}
       - Biografia = ${bio}
       `)
   }
@@ -78,7 +83,7 @@ function App() {
           <div className="row ">
             <div className="col-lg-3 d-flex flex-column">
               <form onSubmit={sendData}>
-                <input type="text" className=" mb-3 form-control" value={name} placeholder='Nome completo' onChange={(e) => setName(e.target.value)} required />
+                <input type="text" className=" mb-3 form-control" placeholder='Nome completo' ref={name} required />
                 <div>
                   <input type="text" className=" mb-3 form-control" placeholder=' Username' value={username} onChange={(e) => setUsername(e.target.value)} required />
                   {username.trim() && (<p style={{ color: usernameValid ? 'green' : 'red' }}> {usernameValid ? "Username Valido" : "Username non valido"}</p>)}
@@ -87,13 +92,13 @@ function App() {
                   <input type="password" className=" mb-3 form-control" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required />
                   {password.trim() && (<p style={{ color: passwordValid ? 'green' : 'red' }}>{passwordValid ? "Password valida" : "Password non valida"}</p>)}
                 </div>
-                <select className=" mb-3 form-control" value={special} onChange={(e) => setSpecial(e.target.value)} >
+                <select className=" mb-3 form-control" ref={special} >
                   <option >&#9660; Scegli la specializzazione </option>
                   <option value="Full stack">Full Stack </option>
                   <option value="Frontend">Frontend</option>
                   <option value="Backend">Backend</option>
                 </select>
-                <input type="number" className=" mb-3 form-control" placeholder='Anni di esperienza' value={anni} onChange={(e) => setAnni(e.target.value)} required />
+                <input type="number" className=" mb-3 form-control" placeholder='Anni di esperienza' ref={anni} required />
                 <div>
                   <textarea className=" mb-3 form-control" placeholder='Breve descrizione' value={bio} onChange={(e) => setBio(e.target.value)} required></textarea>
                   {bio.trim() && (<p style={{ color: bioValid ? 'green' : 'red' }}>{bioValid ? "Descrizione valida" : "Descrizione troppo corta o lunga"}</p>)}
